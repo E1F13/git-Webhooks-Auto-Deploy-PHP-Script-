@@ -1,0 +1,35 @@
+name: PHP Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-php-script:
+    runs-on: ubuntu-latest
+
+    env:
+      SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+
+      - name: Install Composer
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php --install-dir=bin --filename=composer
+
+      - name: Install Dependencies
+        run: composer install
+
+      - name: Run PHP Script with Secret Token
+        run: php your_script.php  # Replace with the actual PHP script you want to run
+        env:
+          SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
